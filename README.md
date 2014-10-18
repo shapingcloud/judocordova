@@ -1,0 +1,4 @@
+judocordova
+===========
+
+Judopay Cordova Plugin
