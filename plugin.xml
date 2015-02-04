@@ -38,6 +38,7 @@
 		<source-file src="src/ios/JudoPaymentPlugin.m" />
         <resource-file src="src/ios/Framework/JudoPay.bundle" />
         <framework src="src/ios/Framework/JudoPay.framework" custom="true" />
+        <framework src="CoreTelephony.framework" weak="true" />
 
     </platform>
 </plugin>
