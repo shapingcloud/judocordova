@@ -29,19 +29,14 @@
 -(void)paymentAction:(id)sender withCommand:(CDVInvokedUrlCommand*)command {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     float paymentAmount = [[command.arguments objectAtIndex:0] floatValue];
-    NSString* paymentId = [command.arguments objectAtIndex:1];
+    NSString* currency = [command.arguments objectAtIndex:1];
     NSString* paymentRef = [command.arguments objectAtIndex:2];
     NSString* consumerRef = [command.arguments objectAtIndex:3];
-    NSDictionary *cardInfo;
-    NSString *jsonStr = [command.arguments objectAtIndex:4];
-    if(jsonStr.length>0){
-        //jsonStr = [jsonStr stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-        //jsonStr = [NSString stringWithFormat:@"[%@]",jsonStr];
-        cardInfo = [NSJSONSerialization JSONObjectWithData:[jsonStr dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-    }
-    NSString *token = [command.arguments objectAtIndex:5];
-    NSString *secret = [command.arguments objectAtIndex:6];
-    NSString *env = [command.arguments objectAtIndex:7];
+    NSString *env = [command.arguments objectAtIndex:4];
+    NSString* paymentId = @"100610-575";
+    NSString *token = @"ujubiPf44kmutM5W";
+    NSString *secret = @"1fc7c19857263dce56f022ac0d3da96d90c823a6f9c11b28de26e92698529f38";
+   
     
     if(env=='Staging'){
     [JudoSDKManager setSandboxMode];
@@ -55,65 +50,37 @@
     NSLog(@"Payment ID: [%@]", paymentId);
     NSLog(@"Payment Ref: [%@]", paymentRef);
     NSLog(@"Consumer Ref: [%@]", consumerRef);
+
+    [JudoSDKManager setCurrency:currency];
     
-    if(![cardInfo objectForKey:@"cardToken"]){ //Do we have stored card details? If not request them
-        [JudoSDKManager
-         makeAPaymentWithAmount:paymentAmount
-         toJudoID:paymentId
-         withPayRef:paymentRef
-         withConsumerRef:consumerRef
-         withMetaData: @{@"TestDescription" : @"Test"}
-         andParentViewController:appDelegate.window.rootViewController
-         withSuccess:^(id receipt) {
-             NSLog(@"Success: %@", receipt);
+    
+    [JudoSDKManager
+     makeAPaymentWithAmount:paymentAmount
+     toJudoID:paymentId
+     withPayRef:paymentRef
+     withConsumerRef:consumerRef
+     withMetaData: @{@"TestDescription" : @"Test"}
+     andParentViewController:appDelegate.window.rootViewController
+     withSuccess:^(id receipt) {
+         NSLog(@"Success: %@", receipt);
+         
+         NSString* paymentResult = [receipt valueForKey:@"result"];
+         if((paymentResult != nil)&&([paymentResult isEqualToString:@"Success"])){
              
-             NSString* paymentResult = [receipt valueForKey:@"result"];
-             if((paymentResult != nil)&&([paymentResult isEqualToString:@"Success"])){
-                 
-                 CDVPluginResult *pluginResult = [ CDVPluginResult resultWithStatus : CDVCommandStatus_OK messageAsDictionary : receipt ];
-                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-             } else {
-                 CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Cancelled"];
-                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-             }
-             
-         } withFailure:^(NSError *error) {
-             NSLog(@"Fail: %@", error);
-             
-             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"user_cancelled"];
+             CDVPluginResult *pluginResult = [ CDVPluginResult resultWithStatus : CDVCommandStatus_OK messageAsDictionary : receipt ];
              [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-         }];
-    }
-    else{ //Pay with saved card detials
-        [JudoSDKManager
-         makeATokenPaymentWithAmount:paymentAmount
-         withCardDetails:cardInfo
-         toJudoID:paymentId
-         withPayRef:paymentRef
-         withConsumerRef:consumerRef
-         withMetaData: @{@"TestDescription" : @"Test"}
-         andParentViewController:appDelegate.window.rootViewController
-         withSuccess:^(id receipt) {
-             NSLog(@"Success: %@", receipt);
-             
-             NSString* paymentResult = [receipt valueForKey:@"result"];
-             if((paymentResult != nil)&&([paymentResult isEqualToString:@"Success"])){
-                 
-                 CDVPluginResult *pluginResult = [ CDVPluginResult resultWithStatus : CDVCommandStatus_OK messageAsDictionary : receipt ];
-                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-             } else {
-                 CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Cancelled"];
-                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-             }
-             
-         } withFailure:^(NSError *error) {
-             NSLog(@"Fail: %@", error);
-             
-             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"user_cancelled"];
+         } else {
+             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Cancelled"];
              [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-         }];
-        
-    }
+         }
+         
+     } withFailure:^(NSError *error) {
+         NSLog(@"Fail: %@", error);
+         
+         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"user_cancelled"];
+         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+     }];
+   
     
     
     

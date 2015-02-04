@@ -5,26 +5,20 @@ function JudoPaymentPlugin() {
 // Make one off payment
 JudoPaymentPlugin.prototype.makeOneOffSimpleTransaction = function(
         paymentAmount,
-        paymentId,
-        paymentToken,
+        currency,
         paymentRef,
         consumerRef,
-        restaurantName,
-        restaurantColor,
-        restaurantSecColor,
+        judoenv,
         onSuccess,
         onFail) {
 
     cordova.exec(onSuccess, onFail, 'JudoPaymentPlugin', 'makeSimpleTransaction',
             [
                 parseFloat(paymentAmount),
-                paymentId,
-                paymentToken,
+                currency,
                 paymentRef,
                 consumerRef,
-                restaurantName,
-                restaurantColor,
-                restaurantSecColor,
+                judoenv
             ]
             );
 }

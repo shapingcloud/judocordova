@@ -17,6 +17,14 @@
         </config-file>
         <config-file parent="/*" target="AndroidManifest.xml" />
         <source-file src="src/android/JudoPaymentPlugin.java" target-dir="src/com/nudge/judopay" />
+        <source-file src="src/android/JudoLibrary" target-dir="./" />
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:name="com.judopay.android.library.activities.PaymentTokenActivity"/>
+            <activity android:name="com.judopay.android.library.activities.PaymentActivity"/>
+            <activity android:name="com.judopay.android.library.activities.PreAuthActivity"/>
+            <activity android:name="com.judopay.android.library.activities.PreAuthTokenActivity"/>
+            <activity android:name="com.judopay.android.library.activities.RegisterCardActivity"/>
+        </config-file>
     </platform>
     
     <platform name="ios">
@@ -28,6 +36,8 @@
 
 		<header-file src="src/ios/JudoPaymentPlugin.h" />
 		<source-file src="src/ios/JudoPaymentPlugin.m" />
+        <resource-file src="src/ios/Framework/JudoPay.bundle" />
+        <framework src="src/ios/Framework/JudoPay.framework" custom="true" />
 
     </platform>
 </plugin>
