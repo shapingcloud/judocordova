@@ -98,8 +98,8 @@ public class JudoPaymentPlugin extends CordovaPlugin {
 
         JudoSDKManager.setKeyAndSecret(ctx, judo_api_token, judo_api_secret);
 
-        if(judo_env.equals("staging")) {
-        	JudoSDKManager.setSandboxMode(ctx);
+        if(judo_env.equals("live")) {
+        	JudoSDKManager.setProductionMode(ctx);
         }
 
 
