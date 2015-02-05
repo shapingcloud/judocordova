@@ -4,6 +4,10 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
     
     <name>JudoPaymentPlugin</name>
+    <preference name="API_TOKEN" />
+    <preference name="API_SECRET" />
+    <preference name="JUDO_ID" />
+    <preference name="JUDO_ENV" />
     
     <js-module name="JudoPaymentPlugin" src="www/JudoPaymentPlugin.js">
         <clobbers target="JudoPaymentPlugin" />
@@ -25,6 +29,14 @@
             <activity android:name="com.judopay.android.library.activities.PreAuthTokenActivity"/>
             <activity android:name="com.judopay.android.library.activities.RegisterCardActivity"/>
         </config-file>
+        <source-file src="src/android/res/values/JudoPaymentPlugin.xml" target-dir="res/values" />
+        <config-file target="res/values/JudoPaymentPlugin.xml" parent="/*">
+            <string name="judo_api_token">$API_TOKEN</string>
+            <string name="judo_api_secret">$API_SECRET</string>
+            <string name="judo_id">$JUDO_ID</string>
+            <string name="judo_env">$JUDO_ENV</string>
+
+        </config-file>
     </platform>
     
     <platform name="ios">
@@ -39,6 +51,22 @@
         <resource-file src="src/ios/Framework/JudoPay.bundle" />
         <framework src="src/ios/Framework/JudoPay.framework" custom="true" />
         <framework src="CoreTelephony.framework" weak="true" />
+
+        <config-file target="*-Info.plist" parent="JudoAPIToken">
+            <string>$API_TOKEN</string>
+        </config-file>
+        
+        <config-file target="*-Info.plist" parent="JudoAPISecret">
+            <string>$API_SECRET</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="JudoID">
+            <string>$JUDO_ID</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="JudoENV">
+            <string>$JUDO_ENV</string>
+        </config-file>
 
     </platform>
 </plugin>

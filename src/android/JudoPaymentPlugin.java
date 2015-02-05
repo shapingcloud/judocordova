@@ -22,9 +22,7 @@ public class JudoPaymentPlugin extends CordovaPlugin {
     public static final int ACTION_TOKEN_PREAUTH = 202;
     private static final int ACTION_REGISTER_CARD = 301;
 
-    public static final String MY_JUDO_ID = "100610-575";
-    public static final String MY_API_TOKEN = "ujubiPf44kmutM5W";
-    public static final String MY_API_SECRET = "1fc7c19857263dce56f022ac0d3da96d90c823a6f9c11b28de26e92698529f38";
+
     private CallbackContext callbackContext;
 
     @Override
@@ -44,9 +42,7 @@ public class JudoPaymentPlugin extends CordovaPlugin {
                                 args.getString(0), // paymentAmount
                                 args.getString(1), // currency
                                 args.getString(2), // paymentRef
-                                args.getString(3), // consumerRef
-                                args.getString(4) // judoenv
-                              
+                                args.getString(3) // consumerRef
                                 );
             return true;
         }
@@ -85,9 +81,26 @@ public class JudoPaymentPlugin extends CordovaPlugin {
 
 
 
-    private void makeOauthPayment(Context ctx, String amount, String currency, String paymentRef, String customerRef, String judoenv) {
+    private void makeOauthPayment(Context ctx, String amount, String currency, String paymentRef, String customerRef) {
 
-        JudoSDKManager.setKeyAndSecret(ctx, MY_API_TOKEN, MY_API_SECRET);
+
+        int judo_id_id = cordova.getActivity().getResources().getIdentifier("judo_id", "string", cordova.getActivity().getPackageName());
+        String judo_id = cordova.getActivity().getString(judo_id_id);
+
+        int judo_api_token_id = cordova.getActivity().getResources().getIdentifier("judo_api_token", "string", cordova.getActivity().getPackageName());
+        String judo_api_token = cordova.getActivity().getString(judo_api_token_id);
+        
+        int judo_api_secret_id = cordova.getActivity().getResources().getIdentifier("judo_api_secret", "string", cordova.getActivity().getPackageName());
+        String judo_api_secret = cordova.getActivity().getString(judo_api_secret_id);
+
+        int judo_env_id = cordova.getActivity().getResources().getIdentifier("judo_env", "string", cordova.getActivity().getPackageName());
+        String judo_env = cordova.getActivity().getString(judo_env_id);
+
+        JudoSDKManager.setKeyAndSecret(ctx, judo_api_token, judo_api_secret);
+
+        if(judo_env.equals("staging")) {
+        	JudoSDKManager.setSandboxMode(ctx);
+        }
 
 
         // // Optional: Supply meta data about this transaction, pass as last argument instead of null.
@@ -95,7 +108,7 @@ public class JudoPaymentPlugin extends CordovaPlugin {
         // metaData.putString("myName", "myValue");
         // metaData.putString("myOtherName", "myOtherValue");
 
-        Intent intent = JudoSDKManager.makeAPayment(ctx, MY_JUDO_ID, currency, amount, paymentRef, customerRef, null);
+        Intent intent = JudoSDKManager.makeAPayment(ctx, judo_id, currency, amount, paymentRef, customerRef, null);
 
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, ACTION_CARD_PAYMENT);
     }

@@ -26,16 +26,21 @@
     [self paymentAction:nil withCommand:command];
 }
 
--(void)paymentAction:(id)sender withCommand:(CDVInvokedUrlCommand*)command {
+- (void)paymentAction:(id)sender withCommand:(CDVInvokedUrlCommand*)command {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+
     float paymentAmount = [[command.arguments objectAtIndex:0] floatValue];
     NSString* currency = [command.arguments objectAtIndex:1];
     NSString* paymentRef = [command.arguments objectAtIndex:2];
     NSString* consumerRef = [command.arguments objectAtIndex:3];
-    NSString *env = [command.arguments objectAtIndex:4];
-    NSString* paymentId = @"100610-575";
-    NSString *token = @"ujubiPf44kmutM5W";
-    NSString *secret = @"1fc7c19857263dce56f022ac0d3da96d90c823a6f9c11b28de26e92698529f38";
+
+
+    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+
+    NSString *env = [infoDict objectForKey:@"JudoENV"];
+    NSString *paymentId = [infoDict objectForKey:@"JudoID"];
+    NSString *token = [infoDict objectForKey:@"JudoAPIToken"];
+    NSString *secret = [infoDict objectForKey:@"JudoAPISecret"];
    
     
     if(env=='Staging'){

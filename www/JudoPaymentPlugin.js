@@ -8,7 +8,6 @@ JudoPaymentPlugin.prototype.makeOneOffSimpleTransaction = function(
         currency,
         paymentRef,
         consumerRef,
-        judoenv,
         onSuccess,
         onFail) {
 
@@ -17,8 +16,7 @@ JudoPaymentPlugin.prototype.makeOneOffSimpleTransaction = function(
                 parseFloat(paymentAmount),
                 currency,
                 paymentRef,
-                consumerRef,
-                judoenv
+                consumerRef
             ]
             );
 }
