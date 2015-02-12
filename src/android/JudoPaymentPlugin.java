@@ -42,7 +42,9 @@ public class JudoPaymentPlugin extends CordovaPlugin {
                                 args.getString(0), // paymentAmount
                                 args.getString(1), // currency
                                 args.getString(2), // paymentRef
-                                args.getString(3) // consumerRef
+                                args.getString(3), // consumerRef
+                                args.getString(4), // cardToken
+                                args.getString(5)  // consumerToken
                                 );
             return true;
         }
@@ -81,7 +83,7 @@ public class JudoPaymentPlugin extends CordovaPlugin {
 
 
 
-    private void makeOauthPayment(Context ctx, String amount, String currency, String paymentRef, String customerRef) {
+    private void makeOauthPayment(Context ctx, String amount, String currency, String paymentRef, String customerRef, String cardToken, String consumerToken) {
 
 
         int judo_id_id = cordova.getActivity().getResources().getIdentifier("judo_id", "string", cordova.getActivity().getPackageName());
@@ -103,14 +105,23 @@ public class JudoPaymentPlugin extends CordovaPlugin {
         }
 
 
-        // // Optional: Supply meta data about this transaction, pass as last argument instead of null.
-        // Bundle metaData = new Bundle();
-        // metaData.putString("myName", "myValue");
-        // metaData.putString("myOtherName", "myOtherValue");
+        if (cardToken.equals("")){
+            Intent intent = JudoSDKManager.makeAPayment(ctx, judo_id, currency, amount, paymentRef, customerRef, null); 
+            this.cordova.startActivityForResult((CordovaPlugin) this, intent, ACTION_CARD_PAYMENT);
+        } else {
 
-        Intent intent = JudoSDKManager.makeAPayment(ctx, judo_id, currency, amount, paymentRef, customerRef, null);
+            Consumer customer;
+            customer = (Consumer) consumerToken;
 
-        this.cordova.startActivityForResult((CordovaPlugin) this, intent, ACTION_CARD_PAYMENT);
+            CardToken card;
+            card = (CardToken) cardToken;
+            
+            Intent intent = JudoSDKManager.makeATokenPayment(ctx, judo_id, currency, amount, paymentRef, customerRef, card, customer, null);
+            this.cordova.startActivityForResult((CordovaPlugin) this, intent, ACTION_TOKEN_PAYMENT);
+        }
+
+        
+        
     }
 
 }
