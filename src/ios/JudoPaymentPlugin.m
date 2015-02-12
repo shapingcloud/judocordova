@@ -43,8 +43,12 @@
     NSString *secret = [infoDict objectForKey:@"JudoAPISecret"];
    
     
-    if(env=='Staging'){
-    [JudoSDKManager setSandboxMode];
+    NSDictionary *cardInfo;
+    NSDictionary *jsonStr = [command.arguments objectAtIndex:4];
+    if([jsonStr isKindOfClass:[NSDictionary class]]){
+        
+        cardInfo = jsonStr;
+        cardInfo = [cardInfo objectForKey:@"cardDetails"];
     }
     
     [JudoSDKManager setToken:token andSecret:secret];
@@ -57,7 +61,7 @@
     NSLog(@"Consumer Ref: [%@]", consumerRef);
 
     [JudoSDKManager setCurrency:currency];
-    
+    if(![cardInfo objectForKey:@"cardToken"]){ 
     
     [JudoSDKManager
      makeAPaymentWithAmount:paymentAmount
@@ -85,7 +89,35 @@
          CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"user_cancelled"];
          [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
      }];
-   
+   } else {
+    [JudoSDKManager
+         makeATokenPaymentWithAmount:paymentAmount
+         withCardDetails:cardInfo
+         toJudoID:paymentId
+         withPayRef:paymentRef
+         withConsumerRef:consumerRef
+         withMetaData: @{@"TestDescription" : @"Test"}
+         andParentViewController:appDelegate.window.rootViewController
+         withSuccess:^(id receipt) {
+             NSLog(@"Success: %@", receipt);
+             
+             NSString* paymentResult = [receipt valueForKey:@"result"];
+             if((paymentResult != nil)&&([paymentResult isEqualToString:@"Success"])){
+                 
+                 CDVPluginResult *pluginResult = [ CDVPluginResult resultWithStatus : CDVCommandStatus_OK messageAsDictionary : receipt ];
+                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+             } else {
+                 CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Cancelled"];
+                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+             }
+             
+         } withFailure:^(NSError *error) {
+             NSLog(@"Fail: %@", error);
+             
+             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"user_cancelled"];
+             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+         }];
+   }
     
     
     
