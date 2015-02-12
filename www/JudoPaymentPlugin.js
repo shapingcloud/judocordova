@@ -8,8 +8,7 @@ JudoPaymentPlugin.prototype.makeOneOffSimpleTransaction = function(
         currency,
         paymentRef,
         consumerRef,
-        cardToken,
-        consumerToken,
+        userReceipt,
         onSuccess,
         onFail) {
 
@@ -19,8 +18,7 @@ JudoPaymentPlugin.prototype.makeOneOffSimpleTransaction = function(
                 currency,
                 paymentRef,
                 consumerRef,
-                cardToken,
-                consumerToken
+                userReceipt
             ]
             );
 }
