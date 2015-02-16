@@ -42,6 +42,12 @@
     NSString *token = [infoDict objectForKey:@"JudoAPIToken"];
     NSString *secret = [infoDict objectForKey:@"JudoAPISecret"];
    
+    if(env=='Staging'){
+        [JudoSDKManager setSandboxMode];
+    } else {
+        [JudoSDKManager setProductionMode];
+        
+    }
     
     NSDictionary *cardInfo;
     NSDictionary *jsonStr = [command.arguments objectAtIndex:4];
@@ -53,7 +59,8 @@
     
     [JudoSDKManager setToken:token andSecret:secret];
     
-    
+    NSLog(@"Token: [%@]", token);
+    NSLog(@"Secret: [%@]", secret);
     
     NSLog(@"Payment amount: [%f]", paymentAmount);
     NSLog(@"Payment ID: [%@]", paymentId);
