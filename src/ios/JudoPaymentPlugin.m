@@ -42,9 +42,7 @@
     NSString *token = [infoDict objectForKey:@"JudoAPIToken"];
     NSString *secret = [infoDict objectForKey:@"JudoAPISecret"];
    
-    if(env=='Staging'){
-        [JudoSDKManager setSandboxMode];
-    } else {
+    if(env=='Live'){
         [JudoSDKManager setProductionMode];
         
     }
