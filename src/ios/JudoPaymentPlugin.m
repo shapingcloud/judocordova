@@ -42,9 +42,10 @@
     NSString *token = [infoDict objectForKey:@"JudoAPIToken"];
     NSString *secret = [infoDict objectForKey:@"JudoAPISecret"];
    
-    if(env=='live'){
+    BOOL isLive = [env isEqualToString:@"live"];
+   
+    if(isLive){
         [JudoSDKManager setProductionMode];
-        
     }
     
     NSDictionary *cardInfo;
