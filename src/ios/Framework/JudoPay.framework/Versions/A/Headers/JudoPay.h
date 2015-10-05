@@ -2,7 +2,7 @@
 //  JudoPay.h
 //  JudoPay
 //
-//  Version 4.5.5
+//  Version 4.5.4
 //
 //  The MIT License (MIT)
 //
