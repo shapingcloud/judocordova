@@ -44,8 +44,8 @@
    
     BOOL isLive = [env isEqualToString:@"live"];
    
-    if(isLive){
-        [JudoSDKManager setProductionMode];
+    if(!isLive){
+        [JudoSDKManager setSandboxMode];
     }
     
     NSDictionary *cardInfo;
